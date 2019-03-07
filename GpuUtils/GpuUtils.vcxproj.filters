@@ -23,5 +23,8 @@
     <ClInclude Include="GpuFocalProcessing.cuh">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GpuTimer.cuh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

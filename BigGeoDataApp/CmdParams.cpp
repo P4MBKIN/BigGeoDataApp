@@ -17,13 +17,15 @@
 namespace po = boost::program_options;
 
 CmdParams::CmdParams(int argc, char* argv[]) :
-	_isHelp(false), _isTest(false), _isFocalOp(false), _isVerbose(false)
+	_isHelp(false), _isTest(false), _isFocalOp(false),
+	_isCompare(false), _isVerbose(false)
 {
 	po::options_description desc("Возможные параметры");
 	desc.add_options()
 		("help,?", "выводит данное сообщение")
-		("test,t", "запускает тестовые функции на CPU и GPU")
+		("test,t", "запускает тестовые функции на GPU и CPU")
 		("focal,f", po::value<std::vector<std::string>>()->multitoken()->value_name("pathFrom pathTo op"), "выполнить фокальные преобразования")
+		("compare,c", "показывает время выполнения на GPU и CPU")
 		("verbose,v", "выводит на экран отладочную информацию")
 		;
 
@@ -34,6 +36,7 @@ CmdParams::CmdParams(int argc, char* argv[]) :
 		po::notify(vm);
 
 		_isHelp = vm.count("help") != 0 || vm.empty();
+		_isCompare = vm.count("compare") != 0;
 		_isVerbose = vm.count("verbose") != 0;
 		_isTest = vm.count("test") != 0;
 		_isFocalOp = vm.count("focal") != 0;
@@ -84,6 +87,11 @@ bool CmdParams::getIsTest() const
 bool CmdParams::getIsFocalOp() const
 {
 	return _isFocalOp;
+}
+
+bool CmdParams::getIsCompare() const
+{
+	return _isCompare;
 }
 
 bool CmdParams::getIsVerbose() const

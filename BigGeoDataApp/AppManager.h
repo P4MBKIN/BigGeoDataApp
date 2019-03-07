@@ -8,5 +8,5 @@ public:
 	~AppManager();
 
 	std::wstring test() const;
-	std::wstring doFocalOperation(const std::wstring& pathFrom, const std::wstring& pathTo, const std::wstring& type) const;
+	std::wstring doFocalOperation(const std::wstring& pathFrom, const std::wstring& pathTo, const std::wstring& type, bool isCompare) const;
 };

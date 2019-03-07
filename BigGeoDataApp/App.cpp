@@ -28,7 +28,7 @@ void App::run()
 	else if (_params->getIsFocalOp())
 	{
 		const std::wstring result = _manager->doFocalOperation(_params->getPathFrom1(),
-			_params->getPathTo(), _params->getTypeFocalOp());
+			_params->getPathTo(), _params->getTypeFocalOp(), _params->getIsCompare());
 		std::wcout << result;
 	}
 }

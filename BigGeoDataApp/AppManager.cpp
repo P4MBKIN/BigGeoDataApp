@@ -19,23 +19,26 @@ std::wstring AppManager::test() const
 	const double a[arraySize] = { 1.1, 2.2, 3.3, 4.4, 5.5 };
 	const double b[arraySize] = { 10, 20, 30, 40, 50 };
 
-	double cCpu[arraySize] = { 0 };
-	result += L"time CPU: " + std::to_wstring(testPlusCpu(a, b, cCpu, arraySize)) + L"\n";
-	result += L"result CPU: " + std::to_wstring(cCpu[0]) + L", " + std::to_wstring(cCpu[1]) + L", " + std::to_wstring(cCpu[2]) + L", " +
-		std::to_wstring(cCpu[3]) + L", " + std::to_wstring(cCpu[4]) + L"\n";
-
 	double cGpu[arraySize] = { 0 };
 	result += L"time GPU: " + std::to_wstring(testPlusGpu(a, b, cGpu, arraySize)) + L"\n";
 	result += L"result GPU: " + std::to_wstring(cGpu[0]) + L", " + std::to_wstring(cGpu[1]) + L", " + std::to_wstring(cGpu[2]) + L", "
 		+ std::to_wstring(cGpu[3]) + L", " + std::to_wstring(cGpu[4]) + L"\n";
 
+	double cCpu[arraySize] = { 0 };
+	result += L"time CPU: " + std::to_wstring(testPlusCpu(a, b, cCpu, arraySize)) + L"\n";
+	result += L"result CPU: " + std::to_wstring(cCpu[0]) + L", " + std::to_wstring(cCpu[1]) + L", " + std::to_wstring(cCpu[2]) + L", " +
+		std::to_wstring(cCpu[3]) + L", " + std::to_wstring(cCpu[4]) + L"\n";
+
 	return result;
 }
 
-std::wstring AppManager::doFocalOperation(const std::wstring& pathFrom, const std::wstring& pathTo, const std::wstring& type) const
+std::wstring AppManager::doFocalOperation(const std::wstring& pathFrom, const std::wstring& pathTo, const std::wstring& type, bool isCompare) const
 {
-	std::wstring result = L"«апускаем фокальную операцию на GPU\n";
+	std::wstring result;
 	result += L"time GPU: " + std::to_wstring(performFocalOpGpu(pathFrom, pathTo, type)) + L"\n";
-	// TODO : сделать дл€ CPU
+	if (isCompare)
+	{
+		result += L"time CPU: " + std::to_wstring(performFocalOpCpu(pathFrom, type)) + L"\n";
+	}
 	return result;
 }

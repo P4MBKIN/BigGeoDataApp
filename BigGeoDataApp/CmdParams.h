@@ -11,6 +11,7 @@ public:
 	bool getIsHelp() const;
 	bool getIsTest() const;
 	bool getIsFocalOp() const;
+	bool getIsCompare() const;
 	bool getIsVerbose() const;
 	std::string getHelpMessage() const;
 	std::wstring getPathFrom1() const;
@@ -21,6 +22,7 @@ private:
 	bool _isHelp;
 	bool _isTest;
 	bool _isFocalOp;
+	bool _isCompare;
 	bool _isVerbose;
 	std::string _helpMessage;
 	std::wstring _pathFrom1;

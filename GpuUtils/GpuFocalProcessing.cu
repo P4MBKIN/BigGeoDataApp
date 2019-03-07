@@ -1,4 +1,5 @@
 #include "GpuFocalProcessing.cuh"
+#include "GpuTimer.cuh"
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 #include <stdio.h>
@@ -32,15 +33,15 @@ __global__ void applyFocalOpGpu(FocalRasterGpu rasterInput, FocalRasterGpu raste
 			}
 			sum += kernel[i][j] * value;
 		}
-		if (sum <= 0)
-		{
-			sum = 0.0;
-		}
-		rasterOutput(h, w) = (pixel)sum;
 	}
+	if (sum <= 0)
+	{
+		sum = 0.0;
+	}
+	rasterOutput(h, w) = (pixel)sum;
 }
 
-void winGpu::doFocalOpGpu(pixel* input, int height, int width, pixel* output, int type)
+double winGpu::doFocalOpGpu(pixel* input, int height, int width, pixel* output, int type)
 {
 	// Создаем Rater для входных данных
 	FocalRasterGpu rasterInput;
@@ -58,70 +59,70 @@ void winGpu::doFocalOpGpu(pixel* input, int height, int width, pixel* output, in
 	FocalKernelGpu kernelTemp;
 	switch (type)
 	{
-	case FocalOpType::BoxBlur3:
+	case FocalOpTypeGpu::BoxBlur3:
 	{
 		kernelTemp.sideSize = 3;
 		double mas[] = GPU_BOX_BLUR_3;
 		kernelTemp.ker = mas;
 		break;
 	}
-	case FocalOpType::BoxBlur5:
+	case FocalOpTypeGpu::BoxBlur5:
 	{
 		kernelTemp.sideSize = 5;
 		double mas[] = GPU_BOX_BLUR_5;
 		kernelTemp.ker = mas;
 		break;
 	}
-	case FocalOpType::BoxBlur7:
+	case FocalOpTypeGpu::BoxBlur7:
 	{
 		kernelTemp.sideSize = 7;
 		double mas[] = GPU_BOX_BLUR_7;
 		kernelTemp.ker = mas;
 		break;
 	}
-	case FocalOpType::GaussianBlur3:
+	case FocalOpTypeGpu::GaussianBlur3:
 	{
 		kernelTemp.sideSize = 3;
 		double mas[] = GPU_GAUSSIAN_BLUR_3;
 		kernelTemp.ker = mas;
 		break;
 	}
-	case FocalOpType::GaussianBlur5:
+	case FocalOpTypeGpu::GaussianBlur5:
 	{
 		kernelTemp.sideSize = 5;
 		double mas[] = GPU_GAUSSIAN_BLUR_5;
 		kernelTemp.ker = mas;
 		break;
 	}
-	case FocalOpType::EdgeDetection3_1:
+	case FocalOpTypeGpu::EdgeDetection3_1:
 	{
 		kernelTemp.sideSize = 3;
 		double mas[] = GPU_EDGE_DETECTION_3_1;
 		kernelTemp.ker = mas;
 		break;
 	}
-	case FocalOpType::EdgeDetection3_2:
+	case FocalOpTypeGpu::EdgeDetection3_2:
 	{
 		kernelTemp.sideSize = 3;
 		double mas[] = GPU_EDGE_DETECTION_3_2;
 		kernelTemp.ker = mas;
 		break;
 	}
-	case FocalOpType::EdgeDetection3_3:
+	case FocalOpTypeGpu::EdgeDetection3_3:
 	{
 		kernelTemp.sideSize = 3;
 		double mas[] = GPU_EDGE_DETECTION_3_3;
 		kernelTemp.ker = mas;
 		break;
 	}
-	case FocalOpType::Sharpen3:
+	case FocalOpTypeGpu::Sharpen3:
 	{
 		kernelTemp.sideSize = 3;
 		double mas[] = GPU_SHARPEN_3;
 		kernelTemp.ker = mas;
 		break;
 	}
-	case FocalOpType::UnsharpMasking5:
+	case FocalOpTypeGpu::UnsharpMasking5:
 	{
 		kernelTemp.sideSize = 3;
 		double mas[] = GPU_UNSHARP_MASKING_5;
@@ -147,12 +148,17 @@ void winGpu::doFocalOpGpu(pixel* input, int height, int width, pixel* output, in
 	dim3 grid = dim3(height / 32 + 1, width / 32 + 1, 1);
 	dim3 blocks = dim3(32, 32, 1);
 
+	float time;
+	GPU_TIMER_START;
 	applyFocalOpGpu << <grid, blocks >> > (rasterInput, rasterOutput, kernel);
 	cudaDeviceSynchronize();
+	GPU_TIMER_STOP(time);
 
 	cudaMemcpy(output, rasterOutput.data, rasterOutput.size(), cudaMemcpyDeviceToHost);
 
 	cudaFree(rasterInput.data);
 	cudaFree(rasterOutput.data);
 	cudaFree(kernel.ker);
+
+	return (double)time;
 }

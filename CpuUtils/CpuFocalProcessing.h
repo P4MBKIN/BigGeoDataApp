@@ -1,13 +1,11 @@
 #pragma once
-#include "cuda_runtime.h"
-#include "device_launch_parameters.h"
 #include <stdio.h>
 
 typedef unsigned short int pixel;
 
-namespace winGpu
+namespace winCpu
 {
-	enum FocalOpTypeGpu
+	enum FocalOpTypeCpu
 	{
 		BoxBlur3 = 0,
 		BoxBlur5 = 1,
@@ -21,23 +19,23 @@ namespace winGpu
 		UnsharpMasking5 = 9
 	};
 
-	struct FocalKernelGpu
+	struct FocalKernelCpu
 	{
 		int sideSize;
 		int midSize;
 		double* ker;
-		__host__ __device__ const double* operator[] (int i) const { return ker + i * sideSize; }
-		__host__ __device__ double* operator[] (int i) { return ker + i * sideSize; }
-		__host__ __device__ size_t size() const { return sideSize * sideSize * sizeof(double); }
+		const double* operator[] (int i) const { return ker + i * sideSize; }
+		double* operator[] (int i) { return ker + i * sideSize; }
+		size_t size() const { return sideSize * sideSize * sizeof(double); }
 	};
 
-	struct FocalRasterGpu
+	struct FocalRasterCpu
 	{
 		int height, width;
 		const pixel defaultValueConst = 55537;
 		pixel defaultValue = 55537;
 		pixel* data;
-		__host__ __device__ pixel& operator() (int h, int w)
+		pixel& operator() (int h, int w)
 		{
 			if (0 <= h && h < height &&
 				0 <= w && w < width)
@@ -49,7 +47,7 @@ namespace winGpu
 				return defaultValue;
 			}
 		}
-		__host__ __device__ const pixel& operator() (int h, int w) const
+		const pixel& operator() (int h, int w) const
 		{
 			if (0 <= h && h < height &&
 				0 <= w && w < width)
@@ -61,25 +59,25 @@ namespace winGpu
 				return defaultValueConst;
 			}
 		}
-		__host__ __device__ size_t size() const { return height * width * sizeof(pixel); }
+		size_t size() const { return height * width * sizeof(pixel); }
 	};
 
-	double doFocalOpGpu(pixel* input, int height, int width, pixel* output, int type);
+	double doFocalOpCpu(pixel* input, int height, int width, int type);
 }
 
-#define GPU_BOX_BLUR_3 \
+#define CPU_BOX_BLUR_3 \
 { 1.0 / 9, 1.0 / 9, 1.0 / 9, \
 1.0 / 9, 1.0 / 9, 1.0 / 9, \
 1.0 / 9, 1.0 / 9, 1.0 / 9 }
 
-#define GPU_BOX_BLUR_5 \
+#define CPU_BOX_BLUR_5 \
 { 1.0 / 25, 1.0 / 25, 1.0 / 25, 1.0 / 25, 1.0 / 25, \
 1.0 / 25, 1.0 / 25, 1.0 / 25, 1.0 / 25, 1.0 / 25, \
 1.0 / 25, 1.0 / 25, 1.0 / 25, 1.0 / 25, 1.0 / 25, \
 1.0 / 25, 1.0 / 25, 1.0 / 25, 1.0 / 25, 1.0 / 25, \
 1.0 / 25, 1.0 / 25, 1.0 / 25, 1.0 / 25, 1.0 / 25 }
 
-#define GPU_BOX_BLUR_7 \
+#define CPU_BOX_BLUR_7 \
 { 1.0 / 49, 1.0 / 49, 1.0 / 49, 1.0 / 49, 1.0 / 49, 1.0 / 49, 1.0 / 49, \
 1.0 / 49, 1.0 / 49, 1.0 / 49, 1.0 / 49, 1.0 / 49, 1.0 / 49, 1.0 / 49, \
 1.0 / 49, 1.0 / 49, 1.0 / 49, 1.0 / 49, 1.0 / 49, 1.0 / 49, 1.0 / 49, \
@@ -88,29 +86,29 @@ namespace winGpu
 1.0 / 49, 1.0 / 49, 1.0 / 49, 1.0 / 49, 1.0 / 49, 1.0 / 49, 1.0 / 49, \
 1.0 / 49, 1.0 / 49, 1.0 / 49, 1.0 / 49, 1.0 / 49, 1.0 / 49, 1.0 / 49 }
 
-#define GPU_GAUSSIAN_BLUR_3 \
+#define CPU_GAUSSIAN_BLUR_3 \
 { 1.0,  2.0, 1.0, 2.0, 4.0, 2.0, 1.0, 2.0, 1.0 }
 
-#define GPU_GAUSSIAN_BLUR_5 \
+#define CPU_GAUSSIAN_BLUR_5 \
 { 1.0, 4.0, 6.0, 4.0, 1.0, \
 4.0, 16.0, 24.0, 16.0, 4.0, \
 6.0, 24.0, 36.0, 24.0, 6.0, \
 4.0, 16.0, 24.0, 16.0, 4.0, \
 1.0, 4.0, 6.0, 4.0, 1.0 }
 
-#define GPU_EDGE_DETECTION_3_1 \
+#define CPU_EDGE_DETECTION_3_1 \
 { 1.0, 0.0, -1.0, 0.0, 0.0, 0.0, -1.0, 0.0, 1.0 }
 
-#define GPU_EDGE_DETECTION_3_2 \
+#define CPU_EDGE_DETECTION_3_2 \
 { 0.0, 1.0, 0.0, 1.0, -4.0, 1.0, 0.0, 1.0, 0.0 }
 
-#define GPU_EDGE_DETECTION_3_3 \
+#define CPU_EDGE_DETECTION_3_3 \
 { -1.0, -1.0, -1.0, -1.0, 8.0, -1.0, -1.0, -1.0, -1.0 }
 
-#define GPU_SHARPEN_3 \
+#define CPU_SHARPEN_3 \
 { 0.0, -1.0, 0.0, -1.0, 5.0, -1.0, 0.0, -1.0, 0.0 }
 
-#define GPU_UNSHARP_MASKING_5 \
+#define CPU_UNSHARP_MASKING_5 \
 { 1.0, 4.0, 6.0, 4.0, 1.0, \
 4.0, 16.0, 24.0, 16.0, 4.0, \
 6.0, 24.0, -476.0, 24.0, 6.0, \

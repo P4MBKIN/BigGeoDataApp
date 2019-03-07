@@ -75,9 +75,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CpuTimer.h" />
     <ClInclude Include="CpuUtils.h" />
+    <ClInclude Include="CpuFocalProcessing.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CpuFocalProcessing.cpp" />
     <ClCompile Include="CpuUtils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
