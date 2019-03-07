@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.271
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BigGeoDataApp", "BigGeoDataApp\BigGeoDataApp.vcxproj", "{F1951EC6-3730-42C1-A156-E1640544F5DF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{97CC6008-C269-4C8B-9D27-7DF0650C5AF3} = {97CC6008-C269-4C8B-9D27-7DF0650C5AF3}
+		{28B54F25-86FF-4272-A817-9B5E061C5F1A} = {28B54F25-86FF-4272-A817-9B5E061C5F1A}
+		{0164C38D-42C9-4E4E-9444-6F00CFFBB607} = {0164C38D-42C9-4E4E-9444-6F00CFFBB607}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Engine.vcxproj", "{97CC6008-C269-4C8B-9D27-7DF0650C5AF3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{28B54F25-86FF-4272-A817-9B5E061C5F1A} = {28B54F25-86FF-4272-A817-9B5E061C5F1A}
+		{0164C38D-42C9-4E4E-9444-6F00CFFBB607} = {0164C38D-42C9-4E4E-9444-6F00CFFBB607}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CpuUtils", "CpuUtils\CpuUtils.vcxproj", "{0164C38D-42C9-4E4E-9444-6F00CFFBB607}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GpuUtils", "GpuUtils\GpuUtils.vcxproj", "{28B54F25-86FF-4272-A817-9B5E061C5F1A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F1951EC6-3730-42C1-A156-E1640544F5DF}.Debug|x64.ActiveCfg = Debug|x64
+		{F1951EC6-3730-42C1-A156-E1640544F5DF}.Debug|x64.Build.0 = Debug|x64
+		{F1951EC6-3730-42C1-A156-E1640544F5DF}.Release|x64.ActiveCfg = Release|x64
+		{F1951EC6-3730-42C1-A156-E1640544F5DF}.Release|x64.Build.0 = Release|x64
+		{97CC6008-C269-4C8B-9D27-7DF0650C5AF3}.Debug|x64.ActiveCfg = Debug|x64
+		{97CC6008-C269-4C8B-9D27-7DF0650C5AF3}.Debug|x64.Build.0 = Debug|x64
+		{97CC6008-C269-4C8B-9D27-7DF0650C5AF3}.Release|x64.ActiveCfg = Release|x64
+		{97CC6008-C269-4C8B-9D27-7DF0650C5AF3}.Release|x64.Build.0 = Release|x64
+		{0164C38D-42C9-4E4E-9444-6F00CFFBB607}.Debug|x64.ActiveCfg = Debug|x64
+		{0164C38D-42C9-4E4E-9444-6F00CFFBB607}.Debug|x64.Build.0 = Debug|x64
+		{0164C38D-42C9-4E4E-9444-6F00CFFBB607}.Release|x64.ActiveCfg = Release|x64
+		{0164C38D-42C9-4E4E-9444-6F00CFFBB607}.Release|x64.Build.0 = Release|x64
+		{28B54F25-86FF-4272-A817-9B5E061C5F1A}.Debug|x64.ActiveCfg = Debug|x64
+		{28B54F25-86FF-4272-A817-9B5E061C5F1A}.Debug|x64.Build.0 = Debug|x64
+		{28B54F25-86FF-4272-A817-9B5E061C5F1A}.Release|x64.ActiveCfg = Release|x64
+		{28B54F25-86FF-4272-A817-9B5E061C5F1A}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {120C88CE-F5C6-48E4-969C-BBCBAB868B48}
+	EndGlobalSection
+EndGlobal

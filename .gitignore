@@ -1,0 +1,11 @@
+*.opensdf
+*.sdf
+*.user
+*.suo
+*.opendb
+*.aps
+*.ipch
+*.VC.db
+.vs
+temp
+out
