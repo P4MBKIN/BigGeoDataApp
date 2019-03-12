@@ -62,6 +62,7 @@
     </Link>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
+      <AdditionalOptions>--ptxas-options=-v %(AdditionalOptions)</AdditionalOptions>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -81,16 +82,21 @@
     </Link>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
+      <AdditionalOptions>--ptxas-options=-v %(AdditionalOptions)</AdditionalOptions>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <CudaCompile Include="GpuFocalProcessing.cu" />
+    <CudaCompile Include="GpuProjectionProcessing.cu" />
     <CudaCompile Include="GpuUtils.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GpuFocalProcessing.cuh" />
+    <ClInclude Include="GpuMath.cuh" />
+    <ClInclude Include="GpuProjectionProcessing.cuh" />
     <ClInclude Include="GpuTimer.cuh" />
     <ClInclude Include="GpuUtils.cuh" />
+    <ClInclude Include="GpuUtmWgsTransform.cuh" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

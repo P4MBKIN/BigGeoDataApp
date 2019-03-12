@@ -7,6 +7,9 @@
     <CudaCompile Include="GpuFocalProcessing.cu">
       <Filter>Source Files</Filter>
     </CudaCompile>
+    <CudaCompile Include="GpuProjectionProcessing.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -24,6 +27,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GpuTimer.cuh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GpuUtmWgsTransform.cuh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GpuProjectionProcessing.cuh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GpuMath.cuh">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

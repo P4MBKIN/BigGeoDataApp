@@ -1,8 +1,11 @@
-#include "TiffWorker.h"
+#include <TiffWorker.h>
+#include <TiffInfo.h>
 #include <Conversions.h>
 #include <gdal.h>
 #include <gdal_priv.h>
 #include <cpl_conv.h>
+
+using namespace win;
 
 std::tuple<pixel*, int, int> win::getPixelsFromTiff(const std::wstring& path)
 {
@@ -81,4 +84,50 @@ void win::savePixelsToExistTiff(const std::wstring& path, pixel* data)
 	}
 
 	GDALClose(poDataset);
+}
+
+UtmOrWgsTiff win::getTiffInfoUtmOrWgs(const std::wstring& path)
+{
+	GDALDataset* poDataset = (GDALDataset*)GDALOpen(narrow(path, CP_ACP).c_str(), GA_ReadOnly);
+	const int width = GDALGetRasterXSize(poDataset);
+	const int height = GDALGetRasterYSize(poDataset);
+	double adfGeoTransform[6];
+	poDataset->GetGeoTransform(adfGeoTransform);
+	UtmOrWgsTiff info = getUtmOrWgsInfoFromData(poDataset->GetProjectionRef(), adfGeoTransform, height, width);
+	GDALClose(poDataset);
+	return info;
+}
+
+void win::createTiffWithData(UtmOrWgsTiff info, pixel* data, const std::wstring& path)
+{
+	GDALDriver* poDriver;
+	GDALDataset* newDataset;
+	double geoTransform[6] = { info.xOrigin, info.xPixelSize, 0, info.yOrigin, 0, info.yPixelSize };
+	OGRSpatialReference oSRS;
+	char** rMetadata;
+	char* SRS_WKT = NULL;
+	GDALRasterBand* band;
+	char** ops = NULL;
+	GUInt16* rasterArr;
+	poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
+	rMetadata = poDriver->GetMetadata();
+	CSLFetchBoolean(rMetadata, GDAL_DCAP_CREATE, FALSE);
+	newDataset = poDriver->Create(narrow(path, CP_ACP).c_str(), info.width, info.height, 1, GDT_UInt16, ops);
+	rasterArr = (GUInt16*)CPLMalloc(sizeof(GUInt16) * info.width * info.height);
+	for (int i = 0; i < info.height; i++)
+	{
+		for (int j = 0; j < info.width; j++)
+		{
+			rasterArr[i * info.width + j] = data[i * info.width + j];
+		}
+	}
+	newDataset->SetGeoTransform(geoTransform);
+	oSRS.SetWellKnownGeogCS("WGS84");
+	oSRS.exportToWkt(&SRS_WKT);
+	newDataset->SetProjection(SRS_WKT);
+	CPLFree(SRS_WKT);
+	band = newDataset->GetRasterBand(1);
+	band->RasterIO(GF_Write, 0, 0, info.width, info.height, rasterArr, info.width, info.height, GDT_UInt16, 0, 0);
+	CPLFree(rasterArr);
+	GDALClose((GDALDatasetH)newDataset);
 }

@@ -10,8 +10,7 @@ __global__ void applyFocalOpGpu(FocalRasterGpu rasterInput, FocalRasterGpu raste
 {
 	int h = blockDim.x * blockIdx.x + threadIdx.x;
 	int w = blockDim.y * blockIdx.y + threadIdx.y;
-	int c = blockDim.z * blockIdx.z + threadIdx.z;
-	if (rasterInput.height <= h || rasterInput.width <= w || 1 < c)
+	if (rasterInput.height <= h || rasterInput.width <= w)
 	{
 		return;
 	}
@@ -145,12 +144,12 @@ double winGpu::doFocalOpGpu(pixel* input, int height, int width, pixel* output, 
 	cudaMemcpy(rasterInput.data, input, rasterInput.size(), cudaMemcpyHostToDevice);
 	cudaMemcpy(kernel.ker, kernelTemp.ker, kernel.size(), cudaMemcpyHostToDevice);
 
-	dim3 grid = dim3(height / 32 + 1, width / 32 + 1, 1);
-	dim3 blocks = dim3(32, 32, 1);
+	dim3 threadsPerBlock(32, 32);
+	dim3 numBlocks(height / threadsPerBlock.x + 1, width / threadsPerBlock.y + 1);
 
 	float time;
 	GPU_TIMER_START;
-	applyFocalOpGpu << <grid, blocks >> > (rasterInput, rasterOutput, kernel);
+	applyFocalOpGpu << <numBlocks, threadsPerBlock >> > (rasterInput, rasterOutput, kernel);
 	cudaDeviceSynchronize();
 	GPU_TIMER_STOP(time);
 

@@ -1,11 +1,12 @@
 #include "GpuUtils.cuh"
 #include "GpuFocalProcessing.cuh"
+#include "GpuProjectionProcessing.cuh"
 #include "GpuTimer.cuh"
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 #include <stdio.h>
 
-__global__ void addKernelGpu(double *res, const double *a, const double *b)
+__global__ void addKernelGpu(double* res, const double* a, const double* b)
 {
 	int i = threadIdx.x;
 	res[i] = a[i] + b[i];
@@ -41,4 +42,11 @@ double winGpu::testPlusGpu(const double* a, const double* b, double* res, size_t
 double winGpu::performFocalOpGpu(pixel* input, int height, int width, pixel* output, int type)
 {
 	return winGpu::doFocalOpGpu(input, height, width, output, type);
+}
+
+double winGpu::performTransformUtmToWgsCoordsGpu(double xOrigin, double yOrigin, double xPixelSize, double yPixelSize,
+	int height, int width, int zone, bool southhemi, double* lon, double* lat)
+{
+	return winGpu::doTransformUtmToWgsCoordsGpu(xOrigin, yOrigin, xPixelSize, yPixelSize,
+		height, width, zone, southhemi, lon, lat);
 }
