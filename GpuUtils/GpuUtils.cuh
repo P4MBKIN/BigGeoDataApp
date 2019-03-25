@@ -1,6 +1,6 @@
 #pragma once
 
-typedef unsigned short int pixel;
+typedef short int pixel;
 
 namespace winGpu
 {

@@ -22,7 +22,7 @@ std::tuple<pixel*, int, int> win::getPixelsFromTiff(const std::wstring& path)
 	for (int i = 0; i < height; i++)
 	{
 		// Allocate a line buffer
-		uint16_t* pData = (uint16_t*)CPLMalloc(hSize * width);
+		pixel* pData = (pixel*)CPLMalloc(hSize * width);
 		GDALRasterIO(hBand,
 			GF_Read,    // Read from band
 			0, i,       // Offs X, Offs Y
@@ -67,10 +67,10 @@ void win::savePixelsToExistTiff(const std::wstring& path, pixel* data)
 
 	for (int i = 0; i < height; i++)
 	{
-		uint16_t* pData = (uint16_t*)CPLMalloc(hSize * width);
+		pixel* pData = (pixel*)CPLMalloc(hSize * width);
 		for (int j = 0; j < width; j++)
 		{
-			pData[j] = (uint16_t)data[i * width + j];
+			pData[j] = (pixel)data[i * width + j];
 		}
 		GDALRasterIO(hBand,
 			GF_Write,      // Write to band
@@ -108,12 +108,12 @@ void win::createTiffWithData(UtmOrWgsTiff info, pixel* data, const std::wstring&
 	char* SRS_WKT = NULL;
 	GDALRasterBand* band;
 	char** ops = NULL;
-	GUInt16* rasterArr;
+	pixel* rasterArr;
 	poDriver = GetGDALDriverManager()->GetDriverByName("GTiff");
 	rMetadata = poDriver->GetMetadata();
 	CSLFetchBoolean(rMetadata, GDAL_DCAP_CREATE, FALSE);
-	newDataset = poDriver->Create(narrow(path, CP_ACP).c_str(), info.width, info.height, 1, GDT_UInt16, ops);
-	rasterArr = (GUInt16*)CPLMalloc(sizeof(GUInt16) * info.width * info.height);
+	newDataset = poDriver->Create(narrow(path, CP_ACP).c_str(), info.width, info.height, 1, GDT_Int16, ops);
+	rasterArr = (pixel*)CPLMalloc(sizeof(pixel) * info.width * info.height);
 	for (int i = 0; i < info.height; i++)
 	{
 		for (int j = 0; j < info.width; j++)
@@ -126,8 +126,9 @@ void win::createTiffWithData(UtmOrWgsTiff info, pixel* data, const std::wstring&
 	oSRS.exportToWkt(&SRS_WKT);
 	newDataset->SetProjection(SRS_WKT);
 	CPLFree(SRS_WKT);
+	newDataset->GetRasterBand(1)->SetNoDataValue(-9999);
 	band = newDataset->GetRasterBand(1);
-	band->RasterIO(GF_Write, 0, 0, info.width, info.height, rasterArr, info.width, info.height, GDT_UInt16, 0, 0);
+	band->RasterIO(GF_Write, 0, 0, info.width, info.height, rasterArr, info.width, info.height, GDT_Int16, 0, 0);
 	CPLFree(rasterArr);
 	GDALClose((GDALDatasetH)newDataset);
 }

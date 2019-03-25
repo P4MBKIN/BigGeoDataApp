@@ -3,7 +3,7 @@
 #include "device_launch_parameters.h"
 #include <stdio.h>
 
-typedef unsigned short int pixel;
+typedef short int pixel;
 
 namespace winGpu
 {
@@ -34,8 +34,8 @@ namespace winGpu
 	struct FocalRasterGpu
 	{
 		int height, width;
-		const pixel defaultValueConst = 55537;
-		pixel defaultValue = 55537;
+		const pixel defaultValueConst = -9999;
+		pixel defaultValue = -9999;
 		pixel* data;
 		__host__ __device__ pixel& operator() (int h, int w)
 		{

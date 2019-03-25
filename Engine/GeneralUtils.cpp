@@ -7,7 +7,7 @@ void win::replaceNewCoord(double newXOrigin, double newYOrigin, double newXPixel
 	{
 		for (int j = 0; j < newWidth; j++)
 		{
-			output[i * newWidth + j] = 55537;
+			output[i * newWidth + j] = -9999;
 		}
 	}
 	for (int i = 0; i < oldHeight; i++)
@@ -16,7 +16,14 @@ void win::replaceNewCoord(double newXOrigin, double newYOrigin, double newXPixel
 		{
 			int h = (y[i * oldWidth + j] - newYOrigin) / newYPixelSize;
 			int w = (x[i * oldWidth + j] - newXOrigin) / newXPixelSize;
-			output[h * newWidth + w] = input[i * oldWidth + j];
+			if (output[h * newWidth + w] == -9999)
+			{
+				output[h * newWidth + w] = input[i * oldWidth + j];
+			}
+			else if (output[h * newWidth + w] < input[i * oldWidth + j])
+			{
+				output[h * newWidth + w] = input[i * oldWidth + j];
+			}
 		}
 	}
 }

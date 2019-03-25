@@ -3,7 +3,7 @@
 #include "device_launch_parameters.h"
 #include <stdio.h>
 
-typedef unsigned short int pixel;
+typedef short int pixel;
 
 namespace winGpu
 {

@@ -3,7 +3,7 @@
 #include <tuple>
 #include <TiffInfo.h>
 
-typedef unsigned short int pixel;
+typedef short int pixel;
 
 namespace win
 {

@@ -1,7 +1,7 @@
 #pragma once
 #include <stdio.h>
 
-typedef unsigned short int pixel;
+typedef short int pixel;
 
 namespace winCpu
 {
@@ -32,8 +32,8 @@ namespace winCpu
 	struct FocalRasterCpu
 	{
 		int height, width;
-		const pixel defaultValueConst = 55537;
-		pixel defaultValue = 55537;
+		const pixel defaultValueConst = -9999;
+		pixel defaultValue = -9999;
 		pixel* data;
 		pixel& operator() (int h, int w)
 		{
