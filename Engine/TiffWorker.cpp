@@ -122,7 +122,18 @@ void win::createTiffWithData(UtmOrWgsTiff info, pixel* data, const std::wstring&
 		}
 	}
 	newDataset->SetGeoTransform(geoTransform);
+	if (info.isUtm)
+	{
+		std::wstring projType = L"WGS 84 / UTM zone " + std::to_wstring(info.utmZone);
+		projType += info.isUtmSouthhemi == true ? L"S" : L"N";
+		oSRS.SetProjCS(narrow(projType, CP_ACP).c_str());
+	}
 	oSRS.SetWellKnownGeogCS("WGS84");
+	if (info.isUtm)
+	{
+		int isNorth = info.isUtmSouthhemi == true ? 0 : 1;
+		oSRS.SetUTM(info.utmZone, isNorth);
+	}
 	oSRS.exportToWkt(&SRS_WKT);
 	newDataset->SetProjection(SRS_WKT);
 	CPLFree(SRS_WKT);

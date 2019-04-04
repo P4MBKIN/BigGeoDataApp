@@ -44,11 +44,19 @@ double win::performProjectionOpGpu(const std::wstring& pathFrom, const std::wstr
 	UtmOrWgsTiff inputInfo = getTiffInfoUtmOrWgs(pathFrom);
 	double* newXCoord = new double[inputInfo.height * inputInfo.width];
 	double* newYCoord = new double[inputInfo.height * inputInfo.width];
+	int outputUtmZone = 0;
 
 	if (inputInfo.isUtm)
 	{
 		time = winGpu::performTransformUtmToWgsCoordsGpu(inputInfo.xOrigin, inputInfo.yOrigin, inputInfo.xPixelSize, inputInfo.yPixelSize,
 			inputInfo.height, inputInfo.width, inputInfo.utmZone, inputInfo.isUtmSouthhemi, newXCoord, newYCoord);
+	}
+	else
+	{
+		const std::wstring numberZoneStr = type.substr(3, type.size() - 1);
+		outputUtmZone = std::stoi(numberZoneStr);
+		time = winGpu::performTransformWgsToUtmCoordsGpu(inputInfo.xOrigin, inputInfo.yOrigin, inputInfo.xPixelSize, inputInfo.yPixelSize,
+			inputInfo.height, inputInfo.width, outputUtmZone, newXCoord, newYCoord);
 	}
 
 	double minX = *std::min_element(newXCoord, newXCoord + inputInfo.height * inputInfo.width);
@@ -87,6 +95,12 @@ double win::performProjectionOpGpu(const std::wstring& pathFrom, const std::wstr
 	newTiffInfo.yOrigin = maxY;
 	newTiffInfo.xPixelSize = newXPixelSize;
 	newTiffInfo.yPixelSize = newYPixelSize;
+	if (!inputInfo.isUtm)
+	{
+		newTiffInfo.isUtm = true;
+		newTiffInfo.utmZone = outputUtmZone;
+		newTiffInfo.isUtmSouthhemi = inputInfo.yOrigin < 0;
+	}
 	createTiffWithData(newTiffInfo, pixelsOut, pathTo);
 
 	delete[] newXCoord;

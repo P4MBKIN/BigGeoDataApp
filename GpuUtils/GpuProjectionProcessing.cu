@@ -74,3 +74,71 @@ double winGpu::doTransformUtmToWgsCoordsGpu(double xOrigin, double yOrigin, doub
 
 	return (double)time;
 }
+
+__global__ void applyTransformWgsToUtmCoordsGpu(double xOrigin, double yOrigin, double xPixelSize, double yPixelSize,
+	int height, int width, int zone, double* x, double* y)
+{
+	int h = blockDim.x * blockIdx.x + threadIdx.x;
+	int w = blockDim.y * blockIdx.y + threadIdx.y;
+	if (height <= h || width <= w)
+	{
+		return;
+	}
+	double lon = xOrigin + xPixelSize * w;
+	double lat = yOrigin + yPixelSize * h;
+	double newX = 0.0;
+	double newY = 0.0;
+
+	LatLonToUtmXYGpu(lon, lat, zone, newX, newY);
+
+	x[h * width + w] = newX;
+	y[h * width + w] = newY;
+}
+
+double winGpu::doTransformWgsToUtmCoordsGpu(double xOrigin, double yOrigin, double xPixelSize, double yPixelSize,
+	int height, int width, int zone, double* x, double* y)
+{
+	const size_t maxAvaliableCoords = 2000000;
+	int countRowsPerIter = maxAvaliableCoords / width;
+	int countIter = height / countRowsPerIter + 1;
+	const size_t size = width * countRowsPerIter;
+	dim3 threadsPerBlock(16, 16);
+	dim3 numBlocks(countRowsPerIter / threadsPerBlock.x + 1, width / threadsPerBlock.y + 1);
+
+	double* newX = new double[size];
+	double* newY = new double[size];
+	double* dev_x = 0;
+	double* dev_y = 0;
+
+	float time;
+	cudaSetDevice(0);
+	cudaMalloc((void**)&dev_x, size * sizeof(double));
+	cudaMalloc((void**)&dev_y, size * sizeof(double));
+	GPU_TIMER_START;
+	for (int i = 0; i < countIter; i++)
+	{
+		double newYOrigin = yOrigin + i * yPixelSize * countRowsPerIter;
+
+		applyTransformWgsToUtmCoordsGpu << <numBlocks, threadsPerBlock >> > (xOrigin, newYOrigin,
+			xPixelSize, yPixelSize, countRowsPerIter, width, zone, dev_x, dev_y);
+		cudaDeviceSynchronize();
+
+		cudaMemcpy(newX, dev_x, size * sizeof(double), cudaMemcpyDeviceToHost);
+		cudaMemcpy(newY, dev_y, size * sizeof(double), cudaMemcpyDeviceToHost);
+
+		size_t countCoordsForCopy = i != countIter - 1 ? size :
+			width * height - countRowsPerIter * width * i;
+		for (int j = 0; j < countCoordsForCopy; j++)
+		{
+			x[i * size + j] = newX[j];
+			y[i * size + j] = newY[j];
+		}
+	}
+	GPU_TIMER_STOP(time);
+	cudaFree(dev_x);
+	cudaFree(dev_y);
+	delete[] newX;
+	delete[] newY;
+
+	return (double)time;
+}

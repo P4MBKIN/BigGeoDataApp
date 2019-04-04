@@ -18,13 +18,14 @@ namespace po = boost::program_options;
 
 CmdParams::CmdParams(int argc, char* argv[]) :
 	_isHelp(false), _isTest(false), _isFocalOp(false),
-	_isCompare(false), _isVerbose(false)
+	_isProjectionOp(false), _isCompare(false), _isVerbose(false)
 {
 	po::options_description desc("¬озможные параметры");
 	desc.add_options()
 		("help,?", "выводит данное сообщение")
 		("test,t", "запускает тестовые функции на GPU и CPU")
 		("focal,f", po::value<std::vector<std::string>>()->multitoken()->value_name("pathFrom pathTo op"), "выполнить фокальные преобразовани€")
+		("projection,p", po::value<std::vector<std::string>>()->multitoken()->value_name("pathFrom pathTo typeTo"), "выполнить перепроецирование")
 		("compare,c", "показывает врем€ выполнени€ на GPU и CPU")
 		("verbose,v", "выводит на экран отладочную информацию")
 		;
@@ -40,6 +41,7 @@ CmdParams::CmdParams(int argc, char* argv[]) :
 		_isVerbose = vm.count("verbose") != 0;
 		_isTest = vm.count("test") != 0;
 		_isFocalOp = vm.count("focal") != 0;
+		_isProjectionOp = vm.count("projection") != 0;
 		if (_isFocalOp)
 		{
 			std::vector<std::string> params = vm["focal"].as<std::vector<std::string>>();
@@ -50,6 +52,17 @@ CmdParams::CmdParams(int argc, char* argv[]) :
 			_pathFrom1 = wide(params[0]);
 			_pathTo = wide(params[1]);
 			_typeFocalOp = wide(params[2]);
+		}
+		else if (_isProjectionOp)
+		{
+			std::vector<std::string> params = vm["projection"].as<std::vector<std::string>>();
+			if (params.size() != 3)
+			{
+				throw std::runtime_error("Ќекоррекнтые параметры");
+			}
+			_pathFrom1 = wide(params[0]);
+			_pathTo = wide(params[1]);
+			_typeProjectionOp = wide(params[2]);
 		}
 	}
 	catch (const boost::exception&)
@@ -89,6 +102,11 @@ bool CmdParams::getIsFocalOp() const
 	return _isFocalOp;
 }
 
+bool CmdParams::getIsProjectionOp() const
+{
+	return _isProjectionOp;
+}
+
 bool CmdParams::getIsCompare() const
 {
 	return _isCompare;
@@ -117,4 +135,9 @@ std::wstring CmdParams::getPathTo() const
 std::wstring CmdParams::getTypeFocalOp() const
 {
 	return _typeFocalOp;
+}
+
+std::wstring CmdParams::getTypeProjectionOp() const
+{
+	return _typeProjectionOp;
 }

@@ -50,3 +50,10 @@ double winGpu::performTransformUtmToWgsCoordsGpu(double xOrigin, double yOrigin,
 	return winGpu::doTransformUtmToWgsCoordsGpu(xOrigin, yOrigin, xPixelSize, yPixelSize,
 		height, width, zone, southhemi, lon, lat);
 }
+
+double winGpu::performTransformWgsToUtmCoordsGpu(double xOrigin, double yOrigin, double xPixelSize, double yPixelSize,
+	int height, int width, int zone, double* x, double* y)
+{
+	return winGpu::doTransformWgsToUtmCoordsGpu(xOrigin, yOrigin, xPixelSize, yPixelSize,
+		height, width, zone, x, y);
+}

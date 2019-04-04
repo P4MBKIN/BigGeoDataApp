@@ -8,4 +8,6 @@ namespace winGpu
 	double performFocalOpGpu(pixel* input, int height, int width, pixel* output, int type);
 	double performTransformUtmToWgsCoordsGpu(double xOrigin, double yOrigin, double xPixelSize, double yPixelSize,
 		int height, int width, int zone, bool southhemi, double* lon, double* lat);
+	double performTransformWgsToUtmCoordsGpu(double xOrigin, double yOrigin, double xPixelSize, double yPixelSize,
+		int height, int width, int zone, double* x, double* y);
 }

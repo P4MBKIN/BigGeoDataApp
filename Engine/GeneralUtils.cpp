@@ -16,6 +16,10 @@ void win::replaceNewCoord(double newXOrigin, double newYOrigin, double newXPixel
 		{
 			int h = (y[i * oldWidth + j] - newYOrigin) / newYPixelSize;
 			int w = (x[i * oldWidth + j] - newXOrigin) / newXPixelSize;
+			if (h * newWidth + w > newHeight * newWidth)
+			{
+				continue;
+			}
 			if (output[h * newWidth + w] == -9999)
 			{
 				output[h * newWidth + w] = input[i * oldWidth + j];

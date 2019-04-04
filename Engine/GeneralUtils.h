@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+#include <tuple>
 
 typedef short int pixel;
 
