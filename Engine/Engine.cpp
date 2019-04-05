@@ -95,6 +95,7 @@ double win::performProjectionOpGpu(const std::wstring& pathFrom, const std::wstr
 	newTiffInfo.yOrigin = maxY;
 	newTiffInfo.xPixelSize = newXPixelSize;
 	newTiffInfo.yPixelSize = newYPixelSize;
+	newTiffInfo.isUtm = false;
 	if (!inputInfo.isUtm)
 	{
 		newTiffInfo.isUtm = true;
