@@ -39,9 +39,9 @@ double winGpu::testPlusGpu(const double* a, const double* b, double* res, size_t
 	return (double)time;
 }
 
-double winGpu::performFocalOpGpu(pixel* input, int height, int width, pixel* output, int type)
+double winGpu::performFocalOpGpu(pixel* input, int height, int width, pixel* output, std::vector<double> matrix)
 {
-	return winGpu::doFocalOpGpu(input, height, width, output, type);
+	return winGpu::doFocalOpGpu(input, height, width, output, matrix);
 }
 
 double winGpu::performTransformUtmToWgsCoordsGpu(double xOrigin, double yOrigin, double xPixelSize, double yPixelSize,

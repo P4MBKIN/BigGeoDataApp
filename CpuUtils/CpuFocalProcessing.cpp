@@ -36,7 +36,7 @@ void applyFocalOpCpu(FocalRasterCpu rasterInput, FocalKernelCpu kernel)
 	}
 }
 
-double winCpu::doFocalOpCpu(pixel* input, int height, int width, int type)
+double winCpu::doFocalOpCpu(pixel* input, int height, int width, std::vector<double> matrix)
 {
 	// Создаем Rater для входных данных
 	FocalRasterCpu rasterInput;
@@ -46,81 +46,8 @@ double winCpu::doFocalOpCpu(pixel* input, int height, int width, int type)
 
 	// Создаем Kernel для применения матрицы свертки
 	FocalKernelCpu kernel;
-	switch (type)
-	{
-	case FocalOpTypeCpu::BoxBlur3:
-	{
-		kernel.sideSize = 3;
-		double mas[] = CPU_BOX_BLUR_3;
-		kernel.ker = mas;
-		break;
-	}
-	case FocalOpTypeCpu::BoxBlur5:
-	{
-		kernel.sideSize = 5;
-		double mas[] = CPU_BOX_BLUR_5;
-		kernel.ker = mas;
-		break;
-	}
-	case FocalOpTypeCpu::BoxBlur7:
-	{
-		kernel.sideSize = 7;
-		double mas[] = CPU_BOX_BLUR_7;
-		kernel.ker = mas;
-		break;
-	}
-	case FocalOpTypeCpu::GaussianBlur3:
-	{
-		kernel.sideSize = 3;
-		double mas[] = CPU_GAUSSIAN_BLUR_3;
-		kernel.ker = mas;
-		break;
-	}
-	case FocalOpTypeCpu::GaussianBlur5:
-	{
-		kernel.sideSize = 5;
-		double mas[] = CPU_GAUSSIAN_BLUR_5;
-		kernel.ker = mas;
-		break;
-	}
-	case FocalOpTypeCpu::EdgeDetection3_1:
-	{
-		kernel.sideSize = 3;
-		double mas[] = CPU_EDGE_DETECTION_3_1;
-		kernel.ker = mas;
-		break;
-	}
-	case FocalOpTypeCpu::EdgeDetection3_2:
-	{
-		kernel.sideSize = 3;
-		double mas[] = CPU_EDGE_DETECTION_3_2;
-		kernel.ker = mas;
-		break;
-	}
-	case FocalOpTypeCpu::EdgeDetection3_3:
-	{
-		kernel.sideSize = 3;
-		double mas[] = CPU_EDGE_DETECTION_3_3;
-		kernel.ker = mas;
-		break;
-	}
-	case FocalOpTypeCpu::Sharpen3:
-	{
-		kernel.sideSize = 3;
-		double mas[] = CPU_SHARPEN_3;
-		kernel.ker = mas;
-		break;
-	}
-	case FocalOpTypeCpu::UnsharpMasking5:
-	{
-		kernel.sideSize = 3;
-		double mas[] = CPU_UNSHARP_MASKING_5;
-		kernel.ker = mas;
-		break;
-	}
-	default:
-		break;
-	}
+	kernel.sideSize = (int)std::sqrt(matrix.size());
+	kernel.ker = matrix.data();
 	kernel.midSize = kernel.sideSize / 2;
 
 	double time;

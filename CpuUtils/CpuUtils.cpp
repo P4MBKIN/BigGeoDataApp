@@ -20,7 +20,7 @@ double winCpu::testPlusCpu(const double* a, const double* b, double* res, size_t
 	return time;
 }
 
-double winCpu::performFocalOpCpu(pixel* input, int height, int width, int type)
+double winCpu::performFocalOpCpu(pixel* input, int height, int width, std::vector<double> matrix)
 {
-	return winCpu::doFocalOpCpu(input, height, width, type);
+	return winCpu::doFocalOpCpu(input, height, width, matrix);
 }

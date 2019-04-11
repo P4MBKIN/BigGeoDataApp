@@ -24,8 +24,8 @@ CmdParams::CmdParams(int argc, char* argv[]) :
 	desc.add_options()
 		("help,?", "выводит данное сообщение")
 		("test,t", "запускает тестовые функции на GPU и CPU")
-		("focal,f", po::value<std::vector<std::string>>()->multitoken()->value_name("pathFrom pathTo op"), "выполнить фокальные преобразования")
-		("projection,p", po::value<std::vector<std::string>>()->multitoken()->value_name("pathFrom pathTo typeTo"), "выполнить перепроецирование")
+		("focal,f", po::value<std::vector<std::string>>()->multitoken()->value_name("pathFrom pathTo op/pathToMatrix"), "выполняет фокальные преобразования")
+		("projection,p", po::value<std::vector<std::string>>()->multitoken()->value_name("pathFrom pathTo typeTo"), "выполняет перепроецирование")
 		("compare,c", "показывает время выполнения на GPU и CPU")
 		("verbose,v", "выводит на экран отладочную информацию")
 		;

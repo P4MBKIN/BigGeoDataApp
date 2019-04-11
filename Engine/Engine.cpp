@@ -23,12 +23,12 @@ double win::performFocalOpGpu(const std::wstring& pathFrom, const std::wstring& 
 	double time;
 
 	GDALAllRegister();
-	int typeIn = stringToFocalType(type);
+	std::vector<double> matrix = stringToFocalMatrix(type);
 	auto rasterIn = getPixelsFromTiff(pathFrom);
 	const int height = std::get<1>(rasterIn);
 	const int width = std::get<2>(rasterIn);
 	pixel* pixelsOut = new pixel[height * width];
-	time = winGpu::performFocalOpGpu(std::get<0>(rasterIn), height, width, pixelsOut, typeIn);
+	time = winGpu::performFocalOpGpu(std::get<0>(rasterIn), height, width, pixelsOut, matrix);
 	copyTiff(pathFrom, pathTo);
 	savePixelsToExistTiff(pathTo, pixelsOut);
 	delete[] pixelsOut;
@@ -118,11 +118,11 @@ double win::performFocalOpCpu(const std::wstring& pathFrom, const std::wstring& 
 {
 	double time;
 
-	int typeIn = stringToFocalType(type);
+	std::vector<double> matrix = stringToFocalMatrix(type);
 	auto rasterIn = getPixelsFromTiff(pathFrom);
 	const int height = std::get<1>(rasterIn);
 	const int width = std::get<2>(rasterIn);
-	time = winCpu::performFocalOpCpu(std::get<0>(rasterIn), height, width, typeIn);
+	time = winCpu::performFocalOpCpu(std::get<0>(rasterIn), height, width, matrix);
 
 	return time;
 }

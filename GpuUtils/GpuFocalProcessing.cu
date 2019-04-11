@@ -3,6 +3,7 @@
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 #include <stdio.h>
+#include <cmath>
 
 using namespace winGpu;
 
@@ -41,7 +42,7 @@ __global__ void applyFocalOpGpu(FocalRasterGpu rasterInput, FocalRasterGpu raste
 	rasterOutput(h, w) = (pixel)sum;
 }
 
-double winGpu::doFocalOpGpu(pixel* input, int height, int width, pixel* output, int type)
+double winGpu::doFocalOpGpu(pixel* input, int height, int width, pixel* output, std::vector<double> matrix)
 {
 	// Создаем Rater для входных данных
 	FocalRasterGpu rasterInput;
@@ -57,82 +58,10 @@ double winGpu::doFocalOpGpu(pixel* input, int height, int width, pixel* output, 
 
 	// Создаем Kernel для применения матрицы свертки
 	FocalKernelGpu kernelTemp;
-	switch (type)
-	{
-	case FocalOpTypeGpu::BoxBlur3:
-	{
-		kernelTemp.sideSize = 3;
-		double mas[] = GPU_BOX_BLUR_3;
-		kernelTemp.ker = mas;
-		break;
-	}
-	case FocalOpTypeGpu::BoxBlur5:
-	{
-		kernelTemp.sideSize = 5;
-		double mas[] = GPU_BOX_BLUR_5;
-		kernelTemp.ker = mas;
-		break;
-	}
-	case FocalOpTypeGpu::BoxBlur7:
-	{
-		kernelTemp.sideSize = 7;
-		double mas[] = GPU_BOX_BLUR_7;
-		kernelTemp.ker = mas;
-		break;
-	}
-	case FocalOpTypeGpu::GaussianBlur3:
-	{
-		kernelTemp.sideSize = 3;
-		double mas[] = GPU_GAUSSIAN_BLUR_3;
-		kernelTemp.ker = mas;
-		break;
-	}
-	case FocalOpTypeGpu::GaussianBlur5:
-	{
-		kernelTemp.sideSize = 5;
-		double mas[] = GPU_GAUSSIAN_BLUR_5;
-		kernelTemp.ker = mas;
-		break;
-	}
-	case FocalOpTypeGpu::EdgeDetection3_1:
-	{
-		kernelTemp.sideSize = 3;
-		double mas[] = GPU_EDGE_DETECTION_3_1;
-		kernelTemp.ker = mas;
-		break;
-	}
-	case FocalOpTypeGpu::EdgeDetection3_2:
-	{
-		kernelTemp.sideSize = 3;
-		double mas[] = GPU_EDGE_DETECTION_3_2;
-		kernelTemp.ker = mas;
-		break;
-	}
-	case FocalOpTypeGpu::EdgeDetection3_3:
-	{
-		kernelTemp.sideSize = 3;
-		double mas[] = GPU_EDGE_DETECTION_3_3;
-		kernelTemp.ker = mas;
-		break;
-	}
-	case FocalOpTypeGpu::Sharpen3:
-	{
-		kernelTemp.sideSize = 3;
-		double mas[] = GPU_SHARPEN_3;
-		kernelTemp.ker = mas;
-		break;
-	}
-	case FocalOpTypeGpu::UnsharpMasking5:
-	{
-		kernelTemp.sideSize = 3;
-		double mas[] = GPU_UNSHARP_MASKING_5;
-		kernelTemp.ker = mas;
-		break;
-	}
-	default:
-		break;
-	}
+	kernelTemp.sideSize = (int)std::sqrt(matrix.size());
+	kernelTemp.ker = matrix.data();
 	kernelTemp.midSize = kernelTemp.sideSize / 2;
+
 	FocalKernelGpu kernel;
 	kernel.sideSize = kernelTemp.sideSize;
 	kernel.midSize = kernelTemp.midSize;
