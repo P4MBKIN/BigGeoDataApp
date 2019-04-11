@@ -6,14 +6,15 @@
 
 using namespace winGpu;
 
-__global__ void applyFocalOpGpu(FocalRasterGpu rasterInput, FocalRasterGpu rasterOutput, FocalKernelGpu kernel)
+__global__ void applyFocalOpGpu(FocalRasterGpu rasterInput, FocalRasterGpu rasterOutput, FocalKernelGpu kernel, int rowIter)
 {
-	int h = blockDim.x * blockIdx.x + threadIdx.x;
+	int h = blockDim.x * blockIdx.x + threadIdx.x + rowIter;
 	int w = blockDim.y * blockIdx.y + threadIdx.y;
 	if (rasterInput.height <= h || rasterInput.width <= w)
 	{
 		return;
 	}
+
 	if (rasterInput(h, w) == rasterInput.defaultValue)
 	{
 		rasterOutput(h, w) = rasterInput(h, w);
@@ -144,13 +145,22 @@ double winGpu::doFocalOpGpu(pixel* input, int height, int width, pixel* output, 
 	cudaMemcpy(rasterInput.data, input, rasterInput.size(), cudaMemcpyHostToDevice);
 	cudaMemcpy(kernel.ker, kernelTemp.ker, kernel.size(), cudaMemcpyHostToDevice);
 
-	dim3 threadsPerBlock(32, 32);
-	dim3 numBlocks(height / threadsPerBlock.x + 1, width / threadsPerBlock.y + 1);
+	const size_t maxAvaliableCoords = 8000000;
+	int countRowsPerIter = maxAvaliableCoords / width;
+	int countIter = height / countRowsPerIter + 1;
+	const size_t size = width * countRowsPerIter;
+	dim3 threadsPerBlock(16, 16);
+	dim3 numBlocks(countRowsPerIter / threadsPerBlock.x + 1, width / threadsPerBlock.y + 1);
 
 	float time;
 	GPU_TIMER_START;
-	applyFocalOpGpu << <numBlocks, threadsPerBlock >> > (rasterInput, rasterOutput, kernel);
-	cudaDeviceSynchronize();
+	for (int i = 0; i < countIter; i++)
+	{
+		int rowIter = i * countRowsPerIter;
+		applyFocalOpGpu << <numBlocks, threadsPerBlock >> > (rasterInput, rasterOutput, kernel, rowIter);
+		cudaDeviceSynchronize();
+		int k = 5;
+	}
 	GPU_TIMER_STOP(time);
 
 	cudaMemcpy(output, rasterOutput.data, rasterOutput.size(), cudaMemcpyDeviceToHost);

@@ -30,7 +30,7 @@ __global__ void applyTransformUtmToWgsCoordsGpu(double xOrigin, double yOrigin, 
 double winGpu::doTransformUtmToWgsCoordsGpu(double xOrigin, double yOrigin, double xPixelSize, double yPixelSize,
 	int height, int width, int zone, bool southhemi, double* lon, double* lat)
 {
-	const size_t maxAvaliableCoords = 2000000;
+	const size_t maxAvaliableCoords = 1500000;
 	int countRowsPerIter = maxAvaliableCoords / width;
 	int countIter = height / countRowsPerIter + 1;
 	const size_t size = width * countRowsPerIter;
