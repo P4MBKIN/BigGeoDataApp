@@ -127,3 +127,25 @@ double win::performFocalOpCpu(const std::wstring& pathFrom, const std::wstring& 
 	return time;
 }
 
+double win::performProjectionOpCpu(const std::wstring& pathFrom, const std::wstring& type)
+{
+	double time = 0;
+
+	GDALAllRegister();
+	UtmOrWgsTiff inputInfo = getTiffInfoUtmOrWgs(pathFrom);
+	int outputUtmZone = 0;
+
+	if (inputInfo.isUtm)
+	{
+		time = winCpu::performTransformUtmToWgsCoordsCpu(inputInfo.xOrigin, inputInfo.yOrigin, inputInfo.xPixelSize, inputInfo.yPixelSize,
+			inputInfo.height, inputInfo.width, inputInfo.utmZone, inputInfo.isUtmSouthhemi);
+	}
+	else
+	{
+		const std::wstring numberZoneStr = type.substr(3, type.size() - 1);
+		outputUtmZone = std::stoi(numberZoneStr);
+		time = winCpu::performTransformWgsToUtmCoordsCpu(inputInfo.xOrigin, inputInfo.yOrigin, inputInfo.xPixelSize, inputInfo.yPixelSize,
+			inputInfo.height, inputInfo.width, outputUtmZone);
+	}
+	return time;
+}

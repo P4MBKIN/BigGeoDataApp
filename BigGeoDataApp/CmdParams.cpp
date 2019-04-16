@@ -18,7 +18,7 @@ namespace po = boost::program_options;
 
 CmdParams::CmdParams(int argc, char* argv[]) :
 	_isHelp(false), _isTest(false), _isFocalOp(false),
-	_isProjectionOp(false), _isCompare(false), _isVerbose(false)
+	_isProjectionOp(false), _isCompare(false)
 {
 	po::options_description desc("Возможные параметры");
 	desc.add_options()
@@ -27,7 +27,6 @@ CmdParams::CmdParams(int argc, char* argv[]) :
 		("focal,f", po::value<std::vector<std::string>>()->multitoken()->value_name("pathFrom pathTo op/pathToMatrix"), "выполняет фокальные преобразования")
 		("projection,p", po::value<std::vector<std::string>>()->multitoken()->value_name("pathFrom pathTo typeTo"), "выполняет перепроецирование")
 		("compare,c", "показывает время выполнения на GPU и CPU")
-		("verbose,v", "выводит на экран отладочную информацию")
 		;
 
 	po::variables_map vm;
@@ -38,7 +37,6 @@ CmdParams::CmdParams(int argc, char* argv[]) :
 
 		_isHelp = vm.count("help") != 0 || vm.empty();
 		_isCompare = vm.count("compare") != 0;
-		_isVerbose = vm.count("verbose") != 0;
 		_isTest = vm.count("test") != 0;
 		_isFocalOp = vm.count("focal") != 0;
 		_isProjectionOp = vm.count("projection") != 0;
@@ -110,11 +108,6 @@ bool CmdParams::getIsProjectionOp() const
 bool CmdParams::getIsCompare() const
 {
 	return _isCompare;
-}
-
-bool CmdParams::getIsVerbose() const
-{
-	return _isVerbose;
 }
 
 std::string CmdParams::getHelpMessage() const

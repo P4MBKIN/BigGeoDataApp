@@ -24,12 +24,24 @@
     <ClInclude Include="CpuFocalProcessing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CpuProjectionProcessing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CpuUtmWgsTransform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CpuMath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CpuUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CpuFocalProcessing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CpuProjectionProcessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

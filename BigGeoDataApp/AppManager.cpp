@@ -47,9 +47,9 @@ std::wstring AppManager::doProjectionOperation(const std::wstring& pathFrom, con
 {
 	std::wstring result;
 	result += L"time GPU: " + std::to_wstring(performProjectionOpGpu(pathFrom, pathTo, type)) + L"\n";
-	/*if (isCompare)
+	if (isCompare)
 	{
 		result += L"time CPU: " + std::to_wstring(performProjectionOpCpu(pathFrom, type)) + L"\n";
-	}*/
+	}
 	return result;
 }

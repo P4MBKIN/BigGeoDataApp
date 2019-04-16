@@ -6,20 +6,6 @@ typedef short int pixel;
 
 namespace winCpu
 {
-	enum FocalOpTypeCpu
-	{
-		BoxBlur3 = 0,
-		BoxBlur5 = 1,
-		BoxBlur7 = 2,
-		GaussianBlur3 = 3,
-		GaussianBlur5 = 4,
-		EdgeDetection3_1 = 5,
-		EdgeDetection3_2 = 6,
-		EdgeDetection3_3 = 7,
-		Sharpen3 = 8,
-		UnsharpMasking5 = 9
-	};
-
 	struct FocalKernelCpu
 	{
 		int sideSize;

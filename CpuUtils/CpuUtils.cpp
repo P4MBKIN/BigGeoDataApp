@@ -1,6 +1,7 @@
 #include <CpuUtils.h>
 #include <CpuTimer.h>
 #include <CpuFocalProcessing.h>
+#include <CpuProjectionProcessing.h>
 #include <ctime>
 #include <chrono>
 
@@ -23,4 +24,18 @@ double winCpu::testPlusCpu(const double* a, const double* b, double* res, size_t
 double winCpu::performFocalOpCpu(pixel* input, int height, int width, std::vector<double> matrix)
 {
 	return winCpu::doFocalOpCpu(input, height, width, matrix);
+}
+
+double winCpu::performTransformUtmToWgsCoordsCpu(double xOrigin, double yOrigin, double xPixelSize, double yPixelSize,
+	int height, int width, int zone, bool southhemi)
+{
+	return doTransformUtmToWgsCoordsCpu(xOrigin, yOrigin, xPixelSize, yPixelSize,
+		height, width, zone, southhemi);
+}
+
+double winCpu::performTransformWgsToUtmCoordsCpu(double xOrigin, double yOrigin, double xPixelSize, double yPixelSize,
+	int height, int width, int zone)
+{
+	return doTransformWgsToUtmCoordsCpu(xOrigin, yOrigin, xPixelSize, yPixelSize,
+		height, width, zone);
 }

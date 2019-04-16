@@ -75,13 +75,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CpuMath.h" />
     <ClInclude Include="CpuTimer.h" />
     <ClInclude Include="CpuUtils.h" />
     <ClInclude Include="CpuFocalProcessing.h" />
+    <ClInclude Include="CpuProjectionProcessing.h" />
+    <ClInclude Include="CpuUtmWgsTransform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CpuFocalProcessing.cpp" />
     <ClCompile Include="CpuUtils.cpp" />
+    <ClCompile Include="CpuProjectionProcessing.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

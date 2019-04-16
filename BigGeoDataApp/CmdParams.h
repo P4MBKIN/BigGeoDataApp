@@ -13,7 +13,6 @@ public:
 	bool getIsFocalOp() const;
 	bool getIsProjectionOp() const;
 	bool getIsCompare() const;
-	bool getIsVerbose() const;
 	std::string getHelpMessage() const;
 	std::wstring getPathFrom1() const;
 	std::wstring getPathTo() const;
@@ -26,7 +25,6 @@ private:
 	bool _isFocalOp;
 	bool _isProjectionOp;
 	bool _isCompare;
-	bool _isVerbose;
 	std::string _helpMessage;
 	std::wstring _pathFrom1;
 	std::wstring _pathTo;
